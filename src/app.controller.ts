@@ -11,8 +11,8 @@ export class AppController {
   }
 
   @Get("/foo")
-  foo(): string {
-    return "foo";
+  getFoo(): string {
+    return this.appService.getFoo();
   }
 
   @Post("/bar")
