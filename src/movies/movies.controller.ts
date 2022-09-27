@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Delete, Patch } from "@nestjs/common";
+import { Controller, Get, Param, Post, Delete, Patch, Body, Query } from "@nestjs/common";
 
 @Controller("movies")
 export class MoviesController {
@@ -9,11 +9,27 @@ export class MoviesController {
         function request(path, method = "GET", data) {
           fetch(path, {
             method: method.toUpperCase(),
-            body: data
-          }).then(r => r.text()).then(console.log);
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
+            .then(r => r.text())
+            .then(text => {
+              try {
+                console.log(JSON.parse(text));
+              } catch {
+                console.log(text);
+              }
+            });
         }
       </script>
     `;
+  }
+
+  @Get("/search") //search가 :id보다 먼저 와야 함
+  searchMovie(@Query("year") year: string) {
+    return `Search movie year: ${year}`;
   }
 
   @Get("/:id")
@@ -22,17 +38,17 @@ export class MoviesController {
   }
 
   @Post()
-  createMovie() {
-    return "Create movie";
+  createMovie(@Body() movieData) {
+    return `Create movie ${JSON.stringify(movieData)}`;
   }
 
   @Delete("/:id")
   deleteMovie(@Param("id") movieId: string) {
-    return `Delete movie ${movieId}`;
+    return { deletedMovie: movieId };
   }
 
   @Patch("/:id")
-  patchMovide(@Param("id") movieId: string) {
-    return `Patch movie ${movieId}`;
+  patchMovide(@Param("id") movieId: string, @Body() updateData) {
+    return { updatedMovie: movieId, ...updateData };
   }
 }
