@@ -21,11 +21,12 @@ export class MoviesService {
     return movie;
   }
 
-  createMovie(movieData: CreateMovieDto) {
-    this.movies.push({
-      id: Date.now(),
-      ...movieData,
-    });
+  createMovie(movieData: CreateMovieDto): number {
+    const id = Date.now();
+
+    this.movies.push({ id, ...movieData });
+
+    return id;
   }
 
   deleteMovie(id: number) {

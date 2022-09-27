@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { NotFoundException } from "@nestjs/common";
 import { MoviesService } from "./movies.service";
 
 describe("MoviesService", () => {
@@ -16,8 +17,31 @@ describe("MoviesService", () => {
     expect(service).toBeDefined();
   });
 
-  it("should be 2", () => {
-    expect(1 + 1).toEqual(2);
-    expect(1 + 1).not.toEqual(3);
+  describe("getAll", () => {
+    it("should return an array", () => {
+      expect(service.getAll()).toBeInstanceOf(Array);
+    });
+  });
+
+  describe("getMovie", () => {
+    it("should return a movie", () => {
+      const id = service.createMovie({ title: "test", year: 0, genres: ["t1", "t2"] });
+      const movie = service.getMovie(id);
+
+      expect(movie).toBeDefined();
+      expect(movie.id).toEqual(id);
+      expect(movie.title).toEqual("test");
+      expect(movie.year).toEqual(0);
+      expect(movie.genres).toEqual(["t1", "t2"]);
+    });
+
+    it("should throw 404 error", () => {
+      try {
+        service.getMovie(0);
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+        expect(e.message).toEqual(`Movie width id: ${0} not found`);
+      }
+    });
   });
 });

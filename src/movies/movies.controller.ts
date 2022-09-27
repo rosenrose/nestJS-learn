@@ -51,8 +51,8 @@ export class MoviesController {
   }
 
   @Post()
-  createMovie(@Body() movieData: CreateMovieDto) {
-    this.moviesService.createMovie(movieData);
+  createMovie(@Body() movieData: CreateMovieDto): number {
+    return this.moviesService.createMovie(movieData);
   }
 
   @Delete("/:id")
