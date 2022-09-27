@@ -29,15 +29,22 @@ export class MoviesService {
     return movie;
   }
 
-  deleteMovie(movieId: number) {
-    const { id } = this.getMovie(movieId);
-
-    this.movies = this.movies.filter((movie) => movie.id !== id);
-  }
-
-  updateMovie(movieId: number, updateData: UpdateMovieDto) {
+  deleteMovie(movieId: number): Movie {
     const movie = this.getMovie(movieId);
 
-    this.movies = this.movies.map((m) => (m.id === movie.id ? { ...movie, ...updateData } : m));
+    this.movies = this.movies.filter((m) => m.id !== movie.id);
+
+    return movie;
+  }
+
+  updateMovie(movieId: number, updateData: UpdateMovieDto): Movie {
+    const movie = this.getMovie(movieId);
+    let updatedMovie: Movie;
+
+    this.movies = this.movies.map((m) =>
+      m.id === movie.id ? (updatedMovie = { ...movie, ...updateData }) : m
+    );
+
+    return updatedMovie;
   }
 }
