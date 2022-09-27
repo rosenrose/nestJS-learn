@@ -19,14 +19,14 @@ export class MoviesController {
             body: JSON.stringify(data)
           })
             .then(r => new Promise(resolve => (
-              r.text().then(text => resolve([r.status, text]))
+              r.text().then(text => resolve([r.status, r.statusText, text]))
             )))
-            .then(([status, text]) => {
+            .then(([status, statusText, text]) => {
+              let message = null;
               try {
-                console.log(status, JSON.parse(text));
-              } catch {
-                console.log(status, text);
-              }
+                message = JSON.parse(text);
+              } catch { }
+              console.log(status, statusText, message || text);
             });
         }
       </script>
@@ -44,22 +44,22 @@ export class MoviesController {
   }
 
   @Get("/:id")
-  getMovie(@Param("id") movieId: string): Movie | undefined {
+  getMovie(@Param("id") movieId: string): Movie {
     return this.moviesService.getMovie(movieId);
   }
 
   @Post()
   createMovie(@Body() movieData) {
-    return this.moviesService.createMovie(movieData);
+    this.moviesService.createMovie(movieData);
   }
 
   @Delete("/:id")
-  deleteMovie(@Param("id") movieId: string): boolean {
-    return this.moviesService.deleteMovie(movieId);
+  deleteMovie(@Param("id") movieId: string) {
+    this.moviesService.deleteMovie(movieId);
   }
 
   @Patch("/:id")
-  patchMovide(@Param("id") movieId: string, @Body() updateData) {
-    return { updatedMovie: movieId, ...updateData };
+  updateMovide(@Param("id") movieId: string, @Body() updateData) {
+    this.moviesService.updateMovie(movieId, updateData);
   }
 }
