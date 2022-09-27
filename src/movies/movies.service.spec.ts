@@ -25,13 +25,13 @@ describe("MoviesService", () => {
 
   describe("getMovie", () => {
     it("should return a movie", () => {
-      const id = service.createMovie({ title: "test", year: 0, genres: ["t1", "t2"] });
+      const { id } = service.createMovie({ title: "test", year: 2022, genres: ["t1", "t2"] });
       const movie = service.getMovie(id);
 
       expect(movie).toBeDefined();
       expect(movie.id).toEqual(id);
       expect(movie.title).toEqual("test");
-      expect(movie.year).toEqual(0);
+      expect(movie.year).toEqual(2022);
       expect(movie.genres).toEqual(["t1", "t2"]);
     });
 
@@ -41,6 +41,38 @@ describe("MoviesService", () => {
       } catch (e) {
         expect(e).toBeInstanceOf(NotFoundException);
         expect(e.message).toEqual(`Movie width id: ${0} not found`);
+      }
+    });
+  });
+
+  describe("createMovie", () => {
+    it("shoud create a movie", () => {
+      const movie = service.createMovie({ title: "test", year: 2022, genres: ["t1", "t2"] });
+
+      expect(movie).toBeDefined();
+      expect(movie.id).toBeLessThanOrEqual(Date.now());
+      expect(movie.title).toEqual("test");
+      expect(movie.year).toEqual(2022);
+      expect(movie.genres).toEqual(["t1", "t2"]);
+    });
+  });
+
+  describe("deleteMovie", () => {
+    it("should delete a movie", () => {
+      const { id } = service.createMovie({ title: "", year: 0, genres: [] });
+
+      const beforeDelete = service.getAll();
+      service.deleteMovie(id);
+      const afterDelete = service.getAll();
+
+      expect(afterDelete.length).toEqual(beforeDelete.length - 1);
+    });
+
+    it("should throw 404 error", () => {
+      try {
+        service.deleteMovie(0);
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
       }
     });
   });

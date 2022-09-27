@@ -11,32 +11,32 @@ export class MoviesService {
     return this.movies;
   }
 
-  getMovie(id: number): Movie {
-    const movie = this.movies.find((movie) => movie.id === id);
+  getMovie(movieId: number): Movie {
+    const movie = this.movies.find((movie) => movie.id === movieId);
 
     if (!movie) {
-      throw new NotFoundException(`Movie width id: ${id} not found`);
+      throw new NotFoundException(`Movie width id: ${movieId} not found`);
     }
 
     return movie;
   }
 
-  createMovie(movieData: CreateMovieDto): number {
-    const id = Date.now();
+  createMovie(movieData: CreateMovieDto): Movie {
+    const movie = { id: Date.now(), ...movieData };
 
-    this.movies.push({ id, ...movieData });
+    this.movies.push(movie);
 
-    return id;
+    return movie;
   }
 
-  deleteMovie(id: number) {
-    const movie = this.getMovie(id);
+  deleteMovie(movieId: number) {
+    const { id } = this.getMovie(movieId);
 
-    this.movies = this.movies.filter((m) => m.id !== movie.id);
+    this.movies = this.movies.filter((movie) => movie.id !== id);
   }
 
-  updateMovie(id: number, updateData: UpdateMovieDto) {
-    const movie = this.getMovie(id);
+  updateMovie(movieId: number, updateData: UpdateMovieDto) {
+    const movie = this.getMovie(movieId);
 
     this.movies = this.movies.map((m) => (m.id === movie.id ? { ...movie, ...updateData } : m));
   }

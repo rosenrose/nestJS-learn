@@ -51,7 +51,7 @@ export class MoviesController {
   }
 
   @Post()
-  createMovie(@Body() movieData: CreateMovieDto): number {
+  createMovie(@Body() movieData: CreateMovieDto): Movie {
     return this.moviesService.createMovie(movieData);
   }
 
