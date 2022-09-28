@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { AppModule } from "./../src/app.module";
 
-describe('AppController (e2e)', () => {
+describe("AppController (e2e)", () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,24 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it("/ (GET)", () => {
+    return request(app.getHttpServer()).get("/").expect(200).expect("<h1>Home</h1>");
+  });
+
+  describe("/movies", () => {
+    it("GET", () => {
+      return request(app.getHttpServer()).get("/movies").expect(200).expect({});
+    });
+
+    it("POST", () => {
+      return request(app.getHttpServer())
+        .post("/movies")
+        .send({ title: "test", year: 2022, genres: ["g1", "g2"] })
+        .expect(201);
+    });
+
+    it("DELETE", () => {
+      return request(app.getHttpServer()).delete("/movies").expect(404);
+    });
   });
 });
